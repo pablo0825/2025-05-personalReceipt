@@ -4,8 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formField, formFieldSchema } from "../var/GlobalVariable";
 import type { formFieldTypes } from "../var/GlobalVariable";
 import Collapse from "./Collapse";
+import { useGeneratePDF } from "../hooks/useGeneratePDF";
 
 const Form = () => {
+  const { generatePDF } = useGeneratePDF();
+
   const {
     register,
     handleSubmit,
@@ -17,6 +20,7 @@ const Form = () => {
 
   const onSubmit = (data: formFieldTypes) => {
     console.log("送出的表單資料:", data);
+    generatePDF(data);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
