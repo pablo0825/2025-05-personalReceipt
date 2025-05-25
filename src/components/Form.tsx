@@ -19,7 +19,7 @@ const Form = () => {
     console.log("送出的表單資料:", data);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
       {formField.map((field) => (
         <div key={field.name} className="flex flex-col mb-4">
           {/* 字段標題 */}

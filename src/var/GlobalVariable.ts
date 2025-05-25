@@ -64,5 +64,10 @@ export const formFieldSchema = z.object({
   idNumber: z.string().regex(/^[A-Z][0-9]{9}$/, "格式錯誤，需為1英文字+9數字"),
 }); */
 
+export const item = [
+  { key: "receiptResaon", label: "受領事由" },
+  { key: "amount", label: "金額" },
+];
+
 /* 表單字段型別 */
 export type formFieldTypes = z.infer<typeof formFieldSchema>;
