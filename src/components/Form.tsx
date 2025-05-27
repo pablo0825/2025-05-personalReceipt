@@ -12,6 +12,7 @@ const Form = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, submitCount },
   } = useForm<formFieldTypes>({
     resolver: zodResolver(formFieldSchema),
@@ -21,6 +22,7 @@ const Form = () => {
   const onSubmit = (data: formFieldTypes) => {
     console.log("送出的表單資料:", data);
     generatePDF(data);
+    reset(); //重置表單
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
