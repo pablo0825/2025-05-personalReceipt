@@ -5,6 +5,8 @@ import fontkit from "@pdf-lib/fontkit";
 import { useCallback } from "react";
 import { wrapTextByLength } from "../utils/wrapTextByLength";
 import { splitStringIntoGroups } from "../utils/splitStringIntoGroups";
+import { bankAccountX } from "../var/GlobalVariable";
+import { idNumberX } from "../var/GlobalVariable";
 
 export const useGeneratePDF = () => {
   const generatePDF = useCallback(async (formData: formFieldTypes) => {
@@ -87,7 +89,7 @@ export const useGeneratePDF = () => {
 
       idNumber.forEach((str, idx) => {
         page.drawText(str, {
-          x: 90 + idx * 28,
+          x: idNumberX[idx],
           y: 428,
           size: 12,
           font: helveticaFont,
@@ -137,7 +139,7 @@ export const useGeneratePDF = () => {
 
       bankAccountNumber.forEach((nub, idx) => {
         page.drawText(nub, {
-          x: 260 + idx * 20,
+          x: bankAccountX[idx],
           y: 354,
           size: 10,
           font: helveticaFont,

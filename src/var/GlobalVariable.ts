@@ -71,3 +71,10 @@ export const item = [
 
 /* 表單字段型別 */
 export type formFieldTypes = z.infer<typeof formFieldSchema>;
+
+export const bankAccountX = [
+  260, 280, 300, 320, 340, 360, 380, 395, 415, 435, 455, 475, 495, 515, 535,
+  555,
+];
+
+export const idNumberX = [90, 118, 146, 174, 207, 235, 263, 291, 319, 350];
