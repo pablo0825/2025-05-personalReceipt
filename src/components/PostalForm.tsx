@@ -1,35 +1,39 @@
 /* form.tsx */
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formField, formFieldSchema } from "../var/GlobalVariable";
-import type { formFieldTypes } from "../var/GlobalVariable";
+import type { postalFormFieldTypes } from "../var/GlobalVariable";
+import { postalFormField, postalFormFieldSchema } from "../var/GlobalVariable";
 import Collapse from "./Collapse";
 
-interface FormProps {
-  generatePDF: (data: formFieldTypes) => void;
+interface PostalFormProps {
+  generatePostalPDF: (data: postalFormFieldTypes) => void;
   setProgress: React.Dispatch<React.SetStateAction<number>>;
   setIsPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
+const PostalForm = ({
+  generatePostalPDF,
+  setProgress,
+  setIsPopupOpen,
+}: PostalFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, submitCount },
-  } = useForm<formFieldTypes>({
-    resolver: zodResolver(formFieldSchema),
+  } = useForm<postalFormFieldTypes>({
+    resolver: zodResolver(postalFormFieldSchema),
     mode: "onSubmit",
   });
 
-  const onSubmit = async (data: formFieldTypes) => {
+  const onSubmit = async (data: postalFormFieldTypes) => {
     console.log("送出的表單資料:", data);
     setIsPopupOpen(true);
     setProgress(10);
 
     //模擬進度條
     setTimeout(() => setProgress(75), 300);
-    await generatePDF(data); // 負責生成PDF表單
+    await generatePostalPDF(data); // 負責生成PDF表單
     setProgress(100);
 
     //close popup and reset form
@@ -41,7 +45,7 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
-      {formField.map((field) => (
+      {postalFormField.map((field) => (
         <div key={field.name} className="flex flex-col mb-4">
           {/* 字段標題 */}
           <label className="font-medium mb-1 text-left">{field.label}</label>
@@ -60,16 +64,17 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
           {/* 字段輸入框 */}
           <input
             type={field.type}
-            {...register(field.name as keyof formFieldTypes, {
+            {...register(field.name as keyof postalFormFieldTypes, {
               valueAsNumber: field.type === "number" ? true : undefined,
             })}
             className="p-2 border rounded mb-1"
           />
-          {submitCount > 0 && errors[field.name as keyof formFieldTypes] && (
-            <p className="text-red-400">
-              {errors[field.name as keyof formFieldTypes]?.message}
-            </p>
-          )}
+          {submitCount > 0 &&
+            errors[field.name as keyof postalFormFieldTypes] && (
+              <p className="text-red-400">
+                {errors[field.name as keyof postalFormFieldTypes]?.message}
+              </p>
+            )}
         </div>
       ))}
       {/* 提交按鈕 */}
@@ -80,4 +85,4 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
   );
 };
 
-export default Form;
+export default PostalForm;
