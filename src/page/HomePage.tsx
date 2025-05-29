@@ -32,6 +32,7 @@ const HomePage = () => {
         />
       )}
       <Popup visible={isPopupOpen} progress={progress} />
+      <input type="file" accept=".xlsx" className="block mb-2" />
     </div>
   );
 };
