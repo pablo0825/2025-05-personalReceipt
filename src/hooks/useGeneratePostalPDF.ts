@@ -112,7 +112,7 @@ export const useGeneratePostalPDF = () => {
         });
 
         /* bankBranchCode */
-        page.drawText(formData.bankBranchCode, {
+        page.drawText(formData.postalCode, {
           x: 180,
           y: 354,
           size: 12,
@@ -134,11 +134,11 @@ export const useGeneratePostalPDF = () => {
       }); */
 
         /* bankAccountNumber */
-        const bankAccountNumber = splitStringIntoGroups(
-          formData.bankAccountNumber
+        const postOfficeAccount = splitStringIntoGroups(
+          formData.postOfficeAccount
         );
 
-        bankAccountNumber.forEach((nub, idx) => {
+        postOfficeAccount.forEach((nub, idx) => {
           page.drawText(nub, {
             x: bankAccountX[idx],
             y: 354,

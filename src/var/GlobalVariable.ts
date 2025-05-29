@@ -86,7 +86,7 @@ export const formFieldSchema = z.object({
   date: z.string().nonempty("請輸入日期"),
 });
 
-/* 銀行表單字段驗證 */
+/* 郵局表單字段驗證 */
 export const postalFormFieldSchema = z.object({
   fullName: z.string().nonempty("請輸入姓名"),
   organization: z.string().nonempty("請輸入服務單位"),
@@ -95,8 +95,8 @@ export const postalFormFieldSchema = z.object({
   amount: z.number().min(0, "金額不能小於0").optional(),
   idNumber: z.string().regex(/^[A-Z][0-9]{9}$/, "格式錯誤，需為1英文字+9數字"),
   email: z.string().email("請輸入有效的 Email").nonempty("請輸入 Email"),
-  bankBranchCode: z.string().nonempty("請輸入700郵局代號"),
-  bankAccountNumber: z.string().nonempty("請輸入銀行帳號"),
+  postalCode: z.string().nonempty("請輸入700郵局代號"),
+  postOfficeAccount: z.string().nonempty("請輸入銀行帳號"),
   date: z.string().nonempty("請輸入日期"),
 });
 

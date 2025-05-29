@@ -28,6 +28,7 @@ const PostalForm = ({
 
   const onSubmit = async (data: postalFormFieldTypes) => {
     console.log("送出的表單資料:", data);
+
     setIsPopupOpen(true);
     setProgress(10);
 
