@@ -1,9 +1,9 @@
-import HomePage from "./page/HomePage";
+import BatchPage from "./page/BatchPage";
 
 function App() {
   return (
     <div>
-      <HomePage />
+      <BatchPage />
     </div>
   );
 }
