@@ -49,8 +49,11 @@ export const useGenerateMultiplePDFs = () => {
           // 取得第一頁
           const page = pdfDoc.getPages()[0];
 
+          // 字串化
+          const safeText = (value: unknown) => String(value ?? "");
+
           /* fullName */
-          page.drawText(row["fullName"] || "", {
+          page.drawText(safeText(row.fullName), {
             x: 85,
             y: 670,
             size: 12,
@@ -59,13 +62,12 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* organization */
-          const organizationText = row["organization"]?.toString() || ""; //字串化
-          const organization = wrapTextByLength(organizationText, 11);
+          const organization = wrapTextByLength(safeText(row.organization), 11);
 
           organization.forEach((line, index) => {
             page.drawText(line, {
               x: 248,
-              y: organizationText.length > 11 ? 678 - index * 15 : 670,
+              y: organization.length > 11 ? 678 - index * 15 : 670,
               size: 12,
               font: customFont,
               color: rgb(0, 0, 0),
@@ -73,7 +75,7 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* jobTitle */
-          page.drawText(row["jobTitle"] || "", {
+          page.drawText(safeText(row.jobTitle), {
             x: 458,
             y: 670,
             size: 12,
@@ -82,7 +84,7 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           //receiptResaon
-          page.drawText(row["receiptResaon"] || "", {
+          page.drawText(safeText(row.receiptResaon), {
             x: 90,
             y: 523,
             size: 12,
@@ -91,7 +93,7 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           //amount
-          page.drawText((row["amount"] || "").toString(), {
+          page.drawText(safeText(row.amount), {
             x: 75,
             y: 465,
             size: 12,
@@ -100,8 +102,7 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* idNumber */
-          const idNumberText = row["idNumber"]?.toString() || "";
-          const idNumber = splitStringIntoGroups(idNumberText);
+          const idNumber = splitStringIntoGroups(safeText(row.idNumber));
 
           idNumber.forEach((str, idx) => {
             page.drawText(str, {
@@ -114,13 +115,12 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* email */
-          const emailText = row["email"]?.toString() || "";
-          const email = wrapTextByLength(emailText, 20);
+          const email = wrapTextByLength(safeText(row.email), 20);
 
           email.forEach((str, index) => {
             page.drawText(str, {
               x: 424,
-              y: emailText.length > 20 ? 434 - index * 15 : 428,
+              y: email.length > 20 ? 434 - index * 15 : 428,
               size: 12,
               font: helveticaFont,
               color: rgb(0, 0, 0),
@@ -128,7 +128,7 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* bankBranchCode */
-          page.drawText(row["bankBranchCode"] || "", {
+          page.drawText(safeText(row.bankBranchCode), {
             x: 180,
             y: 354,
             size: 12,
@@ -137,13 +137,15 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* bankBranchName */
-          const bankBranchNameText = row["bankBranchName"]?.toString() || "";
-          const bankBranchName = wrapTextByLength(bankBranchNameText, 6);
+          const bankBranchName = wrapTextByLength(
+            safeText(row.bankAccountNumber),
+            6
+          );
 
           bankBranchName.forEach((str, index) => {
             page.drawText(str, {
               x: 172,
-              y: bankBranchNameText.length > 6 ? 350 - index * 15 : 350,
+              y: bankBranchName.length > 6 ? 350 - index * 15 : 350,
               size: 10,
               font: customFont,
               color: rgb(0, 0, 0),
@@ -151,10 +153,8 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* bankAccountNumber */
-          const postOfficeAccountText =
-            row["bankAccountNumber"]?.toString() || "";
           const postOfficeAccount = splitStringIntoGroups(
-            postOfficeAccountText
+            safeText(row.bankAccountNumber)
           );
 
           postOfficeAccount.forEach((nub, idx) => {
@@ -168,8 +168,10 @@ export const useGenerateMultiplePDFs = () => {
           });
 
           /* date */
-          //年
-          const year = String(row["date"] || "").slice(0, 4);
+          const year = safeText(row.date).slice(0, 4);
+          const month = safeText(row.date).slice(4, 6);
+          const day = safeText(row.date).slice(6, 8);
+          console.log(day);
 
           page.drawText(year, {
             x: 430,
@@ -179,9 +181,6 @@ export const useGenerateMultiplePDFs = () => {
             color: rgb(0, 0, 0),
           });
 
-          //月
-          const month = String(row["date"] || "").slice(5, 7);
-
           page.drawText(month, {
             x: 480,
             y: 258,
@@ -189,9 +188,6 @@ export const useGenerateMultiplePDFs = () => {
             font: customFont,
             color: rgb(0, 0, 0),
           });
-
-          //日
-          const day = String(row["date"] || "").slice(8, 10);
 
           page.drawText(day, {
             x: 515,
@@ -211,12 +207,13 @@ export const useGenerateMultiplePDFs = () => {
             `第 ${i + 1} 筆（${row["fullName"] || "未知"}）PDF 產生失敗`
           );
         }
-        const zipBlob = await zip.generateAsync({ type: "blob" });
-        saveAs(zipBlob, "批次領據.zip");
+      }
 
-        if (errorList.length > 0) {
-          alert(`⚠️ 以下資料產生失敗：\n${errorList.join("\n")}`);
-        }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      saveAs(zipBlob, "批次領據.zip");
+
+      if (errorList.length > 0) {
+        alert(`⚠️ 以下資料產生失敗：\n${errorList.join("\n")}`);
       }
     } catch (error) {
       console.error("處理檔案時發生錯誤：", error);
