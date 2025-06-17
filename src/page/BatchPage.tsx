@@ -1,5 +1,9 @@
 import React, { useRef, useState } from "react";
 import { useGenerateMultiplePDFs } from "../hooks/useGenerateMultiplePDFs";
+import * as XLSX from "xlsx";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+type ExcelRow = string[];
 
 const BatchPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -10,7 +14,7 @@ const BatchPage = () => {
 
   const { generatePDFs } = useGenerateMultiplePDFs();
 
-  //重置
+  //重置上傳狀態
   const resetUploadState = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
     setFileName("");
@@ -29,10 +33,47 @@ const BatchPage = () => {
     setProgress(10);
 
     try {
-      await simulateUpload();
-      console.log("完成上傳");
+      await simulateLoading();
+
+      //驗證欄位名稱
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json<ExcelRow>(sheet, { header: 1 });
+      const headers = json[0] as string[];
+
+      const requiredFields = [
+        "fullName",
+        "organization",
+        "jobTitle",
+        "receiptResaon",
+        "amount",
+        "idNumber",
+        "email",
+        "bankBranchCode",
+        "bankBranchName",
+        "bankAccountNumber",
+        "date",
+      ];
+
+      const missingFields = requiredFields.filter(
+        (field) => !headers.includes(field)
+      );
+
+      if (missingFields.length > 0) {
+        alert(`❌ 檔案欄位缺少：${missingFields.join(", ")}`);
+        resetUploadState(); // 回到初始狀態
+        return;
+      }
+
+      // ✅ 欄位符合，模擬進度條
+      /* await simulateUpload(); */
+      setIsProgressComplete(true);
+      console.log("✔ 上傳完成");
     } catch (err) {
-      console.error(err);
+      console.error("❌ 檔案處理錯誤:", err);
+      alert("❌ 檔案處理發生錯誤");
+      resetUploadState();
     }
   };
 
@@ -52,11 +93,19 @@ const BatchPage = () => {
         setProgress(current);
         if (current >= 100) {
           clearInterval(interval); //停止計時
-          setIsProgressComplete(true);
           resolve();
         }
       }, 300);
     });
+
+  //模擬loading
+  const simulateLoading = () => {
+    new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve(); // 1.5秒後完成
+      }, 1500);
+    });
+  };
 
   /* 處理生成PDF */
   const handleGeneratePDFs = async () => {
@@ -83,14 +132,7 @@ const BatchPage = () => {
                 {fileName && <p>已選擇檔案: {fileName}</p>}
                 {/* 進度條 */}
                 <button
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.value = "";
-                      setFileName("");
-                      setIsFileUpload(false);
-                      setIsProgressComplete(false);
-                    }
-                  }}
+                  onClick={resetUploadState}
                   className="px-4 py-2 bg-red-600 text-white rounded"
                 >
                   ❌ 清除檔案
@@ -104,14 +146,21 @@ const BatchPage = () => {
               </button>
             </div>
           ) : (
-            progress > 0 && (
+            /* progress > 0 && (
               <div className="w-full bg-gray-200 h-4 rounded mt-2">
                 <div
                   className="bg-green-500 h-4 rounded"
                   style={{ width: `${progress}%`, transition: "width 0.3s" }}
                 ></div>
               </div>
-            )
+            ) */
+            <div className="h-96">
+              <DotLottieReact
+                src="https://lottie.host/6f0e5d83-8356-43be-ab64-4b7d983a7d78/K8VRmMzHE8.lottie"
+                loop
+                autoplay
+              />
+            </div>
           )}
         </div>
       ) : (
@@ -122,6 +171,14 @@ const BatchPage = () => {
           📁 選擇檔案
         </button>
       )}
+
+      {/* <div className="h-96">
+        <DotLottieReact
+          src="https://lottie.host/6f0e5d83-8356-43be-ab64-4b7d983a7d78/K8VRmMzHE8.lottie"
+          loop
+          autoplay
+        />
+      </div> */}
 
       {/* 隱藏 input，只用 ref 控制它 */}
       <input

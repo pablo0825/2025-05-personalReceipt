@@ -67,7 +67,7 @@ export const useGenerateMultiplePDFs = () => {
           organization.forEach((line, index) => {
             page.drawText(line, {
               x: 248,
-              y: organization.length > 11 ? 678 - index * 15 : 670,
+              y: row.organization.length > 11 ? 678 - index * 15 : 670,
               size: 12,
               font: customFont,
               color: rgb(0, 0, 0),
@@ -120,7 +120,7 @@ export const useGenerateMultiplePDFs = () => {
           email.forEach((str, index) => {
             page.drawText(str, {
               x: 424,
-              y: email.length > 20 ? 434 - index * 15 : 428,
+              y: row.email.length > 20 ? 434 - index * 15 : 428,
               size: 12,
               font: helveticaFont,
               color: rgb(0, 0, 0),
@@ -129,23 +129,23 @@ export const useGenerateMultiplePDFs = () => {
 
           /* bankBranchCode */
           page.drawText(safeText(row.bankBranchCode), {
-            x: 180,
-            y: 354,
-            size: 12,
+            x: 172,
+            y: 364,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0),
           });
 
           /* bankBranchName */
           const bankBranchName = wrapTextByLength(
-            safeText(row.bankAccountNumber),
+            safeText(row.bankBranchName),
             6
           );
 
           bankBranchName.forEach((str, index) => {
             page.drawText(str, {
               x: 172,
-              y: bankBranchName.length > 6 ? 350 - index * 15 : 350,
+              y: row.bankBranchName.length > 6 ? 350 - index * 15 : 350,
               size: 10,
               font: customFont,
               color: rgb(0, 0, 0),
