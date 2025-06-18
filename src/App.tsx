@@ -1,10 +1,10 @@
-//import BatchPage from "./page/BatchPage";
-import HomePage from "./page/HomePage";
+import BatchPage from "./page/BatchPage";
+//import HomePage from "./page/HomePage";
 
 function App() {
   return (
     <div>
-      <HomePage />
+      <BatchPage />
     </div>
   );
 }
