@@ -1,9 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useGenerateMultiplePDFs } from "../hooks/useGenerateMultiplePDFs";
-import * as XLSX from "xlsx";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-
-type ExcelRow = string[];
+import Popup from "../components/Popup";
+import { validateExcelHeaders } from "../utils/validateExcelHeaders";
 
 const BatchPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -11,6 +9,7 @@ const BatchPage = () => {
   const [isFileUpload, setIsFileUpload] = useState<boolean>(false);
   const [isProgressComplete, setIsProgressComplete] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
 
   const { generatePDFs } = useGenerateMultiplePDFs();
 
@@ -21,6 +20,16 @@ const BatchPage = () => {
     setIsFileUpload(false);
     setIsProgressComplete(false);
     setProgress(0);
+    setIsPopupVisible(false);
+  };
+
+  //模擬loading
+  const simulateLoading = () => {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve(); // 1.5秒後完成
+      }, 1500);
+    });
   };
 
   //處理邏輯
@@ -30,44 +39,17 @@ const BatchPage = () => {
     setFileName(file.name);
     setIsFileUpload(true);
 
-    setProgress(10);
-
     try {
       await simulateLoading();
 
-      //驗證欄位名稱
-      const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const json = XLSX.utils.sheet_to_json<ExcelRow>(sheet, { header: 1 });
-      const headers = json[0] as string[];
+      const missing = await validateExcelHeaders(file);
 
-      const requiredFields = [
-        "fullName",
-        "organization",
-        "jobTitle",
-        "receiptResaon",
-        "amount",
-        "idNumber",
-        "email",
-        "bankBranchCode",
-        "bankBranchName",
-        "bankAccountNumber",
-        "date",
-      ];
-
-      const missingFields = requiredFields.filter(
-        (field) => !headers.includes(field)
-      );
-
-      if (missingFields.length > 0) {
-        alert(`❌ 檔案欄位缺少：${missingFields.join(", ")}`);
-        resetUploadState(); // 回到初始狀態
+      if (missing) {
+        alert(`❌ 檔案欄位缺少：${missing.join(", ")}`);
+        resetUploadState();
         return;
       }
 
-      // ✅ 欄位符合，模擬進度條
-      /* await simulateUpload(); */
       setIsProgressComplete(true);
       console.log("✔ 上傳完成");
     } catch (err) {
@@ -83,30 +65,6 @@ const BatchPage = () => {
     if (file) handleFile(file);
   };
 
-  //模擬進度條
-  const simulateUpload = () =>
-    new Promise<void>((resolve) => {
-      let current = 10;
-      //每300毫秒持續執行方法內容
-      const interval = setInterval(() => {
-        current += 20;
-        setProgress(current);
-        if (current >= 100) {
-          clearInterval(interval); //停止計時
-          resolve();
-        }
-      }, 300);
-    });
-
-  //模擬loading
-  const simulateLoading = () => {
-    new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve(); // 1.5秒後完成
-      }, 1500);
-    });
-  };
-
   /* 處理生成PDF */
   const handleGeneratePDFs = async () => {
     const file = fileInputRef.current?.files?.[0];
@@ -115,10 +73,23 @@ const BatchPage = () => {
       return;
     }
 
-    console.log("📄 開始產生 PDF");
-    await generatePDFs(file);
+    setIsPopupVisible(true);
+    setProgress(0);
 
-    resetUploadState();
+    try {
+      console.log("📄 開始產生 PDF");
+      await generatePDFs(file, (percent) => {
+        setProgress(percent);
+      });
+
+      setTimeout(() => {
+        resetUploadState();
+      }, 500);
+    } catch (error) {
+      console.error("❌ PDF 產生失敗", error);
+      alert("產生 PDF 發生錯誤");
+      resetUploadState();
+    }
   };
 
   return (
@@ -146,20 +117,8 @@ const BatchPage = () => {
               </button>
             </div>
           ) : (
-            /* progress > 0 && (
-              <div className="w-full bg-gray-200 h-4 rounded mt-2">
-                <div
-                  className="bg-green-500 h-4 rounded"
-                  style={{ width: `${progress}%`, transition: "width 0.3s" }}
-                ></div>
-              </div>
-            ) */
-            <div className="h-96">
-              <DotLottieReact
-                src="https://lottie.host/6f0e5d83-8356-43be-ab64-4b7d983a7d78/K8VRmMzHE8.lottie"
-                loop
-                autoplay
-              />
+            <div className="flex items-center justify-center h-20">
+              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
         </div>
@@ -172,13 +131,7 @@ const BatchPage = () => {
         </button>
       )}
 
-      {/* <div className="h-96">
-        <DotLottieReact
-          src="https://lottie.host/6f0e5d83-8356-43be-ab64-4b7d983a7d78/K8VRmMzHE8.lottie"
-          loop
-          autoplay
-        />
-      </div> */}
+      <Popup visible={isPopupVisible} progress={progress} />
 
       {/* 隱藏 input，只用 ref 控制它 */}
       <input

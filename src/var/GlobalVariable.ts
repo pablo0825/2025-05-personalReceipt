@@ -124,3 +124,17 @@ export const bankAccountX = [
 ];
 
 export const idNumberX = [90, 118, 146, 174, 207, 235, 263, 291, 319, 350];
+
+export const requiredFields = [
+  "fullName",
+  "organization",
+  "jobTitle",
+  "receiptResaon",
+  "amount",
+  "idNumber",
+  "email",
+  "bankBranchCode",
+  "bankBranchName",
+  "bankAccountNumber",
+  "date",
+];
