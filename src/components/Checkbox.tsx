@@ -12,7 +12,7 @@ const Checkbox = ({ checked, onChange, label }: checkboxProps) => {
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
+        className="w-4 h-4 text-blue-600  bg-white border-gray-300 rounded  focus:ring-blue-500"
       />
       <span className="text-gray-700">{label}</span>
       <p></p>

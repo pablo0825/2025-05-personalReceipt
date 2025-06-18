@@ -17,7 +17,7 @@ const Collapse = ({ title, children }: CollapseProps) => {
   }, [isOpen]);
 
   return (
-    <div className="border rounded-lg  p-2 mb-4">
+    <div className="border rounded-lg py-2 px-4 mb-4">
       <button
         type="button"
         className="flex justify-between items-center w-full text-left"

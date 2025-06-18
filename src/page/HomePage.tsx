@@ -16,21 +16,23 @@ const HomePage = () => {
   const { generatePostalPDF } = useGeneratePostalPDF();
 
   return (
-    <div>
-      <Checkbox onChange={setToggleFormMode} label="啟用郵局模式" />
-      {toggleFormMode ? (
-        <PostalForm
-          generatePostalPDF={generatePostalPDF}
-          setProgress={setProgress}
-          setIsPopupOpen={setIsPopupOpen}
-        />
-      ) : (
-        <Form
-          generatePDF={generatePDF}
-          setProgress={setProgress}
-          setIsPopupOpen={setIsPopupOpen}
-        />
-      )}
+    <div className="max-w-3xl mx-auto p-10">
+      <div className="p-6 border rounded-lg shadow-xl bg-white">
+        <Checkbox onChange={setToggleFormMode} label="啟用郵局模式" />
+        {toggleFormMode ? (
+          <PostalForm
+            generatePostalPDF={generatePostalPDF}
+            setProgress={setProgress}
+            setIsPopupOpen={setIsPopupOpen}
+          />
+        ) : (
+          <Form
+            generatePDF={generatePDF}
+            setProgress={setProgress}
+            setIsPopupOpen={setIsPopupOpen}
+          />
+        )}
+      </div>
       <Popup visible={isPopupOpen} progress={progress} />
     </div>
   );

@@ -40,7 +40,7 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
     }, 1000);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="pt-4">
       {formField.map((field) => (
         <div key={field.name} className="flex flex-col mb-4">
           {/* 字段標題 */}
@@ -63,17 +63,24 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
             {...register(field.name as keyof formFieldTypes, {
               valueAsNumber: field.type === "number" ? true : undefined,
             })}
-            className="p-2 border rounded mb-1"
+            className={`w-full p-2 border rounded box-border mb-1 transition focus:outline-none focus:ring-2 ${
+              submitCount > 0 && errors[field.name as keyof formFieldTypes]
+                ? "border-[#cd7c82] focus:ring-[#cd7c82]"
+                : "border-gray-300 hover:border-[#b6b8b7] focus:ring-[#708f76]"
+            }`}
           />
           {submitCount > 0 && errors[field.name as keyof formFieldTypes] && (
-            <p className="text-red-400">
+            <p className="text-[#cd7c82]">
               {errors[field.name as keyof formFieldTypes]?.message}
             </p>
           )}
         </div>
       ))}
       {/* 提交按鈕 */}
-      <button type="submit" className="px-6 py-2 bg-emerald-400">
+      <button
+        type="submit"
+        className="mt-4 px-8 py-2 rounded-lg bg-[#8fa791] text-white transition ease-in-out duration-200 hover:scale-105 active:scale-95 hover:shadow-md hover:bg-[#708f76]"
+      >
         提交
       </button>
     </form>
