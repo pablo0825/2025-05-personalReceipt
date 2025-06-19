@@ -5,6 +5,7 @@ import { validateExcelHeaders } from "../utils/validateExcelHeaders";
 import UploadInitial from "../components/uploadInitial";
 import UploadPrepaer from "../components/uploadPrepaer";
 import Checkbox from "../components/Checkbox";
+import { useGenerateMultiplePostalPDFs } from "../hooks/useGenerateMultiplePostalPDFs";
 
 const BatchPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,7 +16,12 @@ const BatchPage = () => {
   const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
   const [toggleUploadMode, setToggleUploadMode] = useState<boolean>(false);
 
-  const { generatePDFs } = useGenerateMultiplePDFs();
+  const { generatePDFs } = useGenerateMultiplePDFs(); //一般模式
+  const { generatePostalPDFs } = useGenerateMultiplePostalPDFs(); //郵局模式
+
+  const sampleHref = toggleUploadMode
+    ? "downloadedFile/samplePost.xlsx"
+    : "downloadedFile/sample.xlsx";
 
   //重置上傳狀態
   const resetUploadState = () => {
@@ -28,11 +34,11 @@ const BatchPage = () => {
   };
 
   //模擬loading
-  const simulateLoading = () => {
+  const simulateLoading = (ms: number = 1500) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve(); // 1.5秒後完成
-      }, 1500);
+      }, ms);
     });
   };
 
@@ -46,7 +52,7 @@ const BatchPage = () => {
     try {
       await simulateLoading();
 
-      const missing = await validateExcelHeaders(file);
+      const missing = await validateExcelHeaders(file, toggleUploadMode);
 
       if (missing) {
         alert(`❌ 檔案欄位缺少：${missing.join(", ")}`);
@@ -82,9 +88,11 @@ const BatchPage = () => {
 
     try {
       console.log("📄 開始產生 PDF");
-      await generatePDFs(file, (percent) => {
-        setProgress(percent);
-      });
+
+      const generateHandler = toggleUploadMode
+        ? generatePostalPDFs
+        : generatePDFs;
+      await generateHandler(file, setProgress);
 
       setTimeout(() => {
         resetUploadState();
@@ -96,16 +104,17 @@ const BatchPage = () => {
     }
   };
 
-  console.log(toggleUploadMode);
-
   return (
     <div className="max-w-3xl mx-auto p-10">
       <div className="p-6 border rounded-lg shadow-xl bg-white">
-        <Checkbox
-          checked={toggleUploadMode}
-          onChange={setToggleUploadMode}
-          label="啟用郵局模式"
-        />
+        {/*  */}
+        <div className="px-4 pb-4">
+          <Checkbox
+            checked={toggleUploadMode}
+            onChange={setToggleUploadMode}
+            label="啟用郵局模式"
+          />
+        </div>
         <div className="w-full max-w-[37.7rem] aspect-[603/400] max-h-[25rem] border-2 border-dashed border-[#8fa791] rounded-md p-8 flex flex-col items-center justify-center space-y-4  bg-white shadow-sm mx-auto">
           {isFileUpload ? (
             <div className="w-full">
@@ -122,10 +131,7 @@ const BatchPage = () => {
               )}
             </div>
           ) : (
-            <UploadInitial
-              href={toggleUploadMode ? "/samplePost.xlsx" : "/sample.xlsx"}
-              fileInputRef={fileInputRef}
-            />
+            <UploadInitial href={sampleHref} fileInputRef={fileInputRef} />
           )}
         </div>
       </div>

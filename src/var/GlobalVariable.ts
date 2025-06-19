@@ -138,3 +138,16 @@ export const requiredFields = [
   "bankAccountNumber",
   "date",
 ];
+
+export const requiredPostalFields = [
+  "fullName",
+  "organization",
+  "jobTitle",
+  "receiptResaon",
+  "amount",
+  "idNumber",
+  "email",
+  "postalCode",
+  "postOfficeAccount",
+  "date",
+];
