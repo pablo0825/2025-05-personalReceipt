@@ -14,7 +14,7 @@ const Popup = ({ visible, progress }: PopupProps) => {
         <h2 className="text-lg font-bold mb-4">PDF 產生中...</h2>
         <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
           <div
-            className="bg-emerald-500 h-4 transition-all"
+            className="bg-[#8fa791] h-4 transition-all"
             style={{ width: `${progress}%` }}
           ></div>
         </div>

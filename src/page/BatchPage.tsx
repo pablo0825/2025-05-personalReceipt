@@ -2,6 +2,9 @@ import React, { useRef, useState } from "react";
 import { useGenerateMultiplePDFs } from "../hooks/useGenerateMultiplePDFs";
 import Popup from "../components/Popup";
 import { validateExcelHeaders } from "../utils/validateExcelHeaders";
+import UploadInitial from "../components/uploadInitial";
+import UploadPrepaer from "../components/uploadPrepaer";
+import Checkbox from "../components/Checkbox";
 
 const BatchPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -10,6 +13,7 @@ const BatchPage = () => {
   const [isProgressComplete, setIsProgressComplete] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false);
+  const [toggleUploadMode, setToggleUploadMode] = useState<boolean>(false);
 
   const { generatePDFs } = useGenerateMultiplePDFs();
 
@@ -92,52 +96,41 @@ const BatchPage = () => {
     }
   };
 
+  console.log(toggleUploadMode);
+
   return (
     <div className="max-w-3xl mx-auto p-10">
       <div className="p-6 border rounded-lg shadow-xl bg-white">
-        <div className="border-2 border-dashed border-[#8fa791] rounded-md p-8 flex flex-col items-center justify-center space-y-4 bg-white shadow-sm">
+        <Checkbox
+          checked={toggleUploadMode}
+          onChange={setToggleUploadMode}
+          label="啟用郵局模式"
+        />
+        <div className="w-full max-w-[37.7rem] aspect-[603/400] max-h-[25rem] border-2 border-dashed border-[#8fa791] rounded-md p-8 flex flex-col items-center justify-center space-y-4  bg-white shadow-sm mx-auto">
           {isFileUpload ? (
-            <div>
+            <div className="w-full">
               {isProgressComplete ? (
-                <div>
-                  <div className="flex space-x-4">
-                    {/* fileName */}
-                    {fileName && <p>已選擇檔案: {fileName}</p>}
-                    {/* 進度條 */}
-                    <button
-                      onClick={resetUploadState}
-                      className="px-4 py-2 bg-red-600 text-white rounded"
-                    >
-                      ❌ 清除檔案
-                    </button>
-                  </div>
-                  <button
-                    onClick={handleGeneratePDFs}
-                    className="cursor-pointer px-8 py-8 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    產生PDF
-                  </button>
-                </div>
+                <UploadPrepaer
+                  fileName={fileName}
+                  resetUploadState={resetUploadState}
+                  handleGeneratePDFs={handleGeneratePDFs}
+                />
               ) : (
                 <div className="flex items-center justify-center h-20">
-                  <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-14 h-14 border-4 border-[#8fa791] border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </div>
           ) : (
-            <div className="m-14">
-              <img src="../upload.png" alt="" />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="cursor-pointer px-8 py-4 bg-[#8fa791] text-white rounded hover:bg-[#708f76]"
-              >
-                📁 選擇檔案
-              </button>
-            </div>
+            <UploadInitial
+              href={toggleUploadMode ? "/samplePost.xlsx" : "/sample.xlsx"}
+              fileInputRef={fileInputRef}
+            />
           )}
         </div>
       </div>
 
+      {/* popup視窗 */}
       <Popup visible={isPopupVisible} progress={progress} />
 
       {/* 隱藏 input，只用 ref 控制它 */}
