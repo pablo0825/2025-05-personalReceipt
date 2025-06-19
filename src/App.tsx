@@ -6,7 +6,7 @@ function App() {
   return (
     <BrowserRouter>
       <nav className="p-4 bg-gray-100 flex space-x-4">
-        <Link to="/single" className=" hover:text-[#8fa791]">
+        <Link to="/" className=" hover:text-[#8fa791]">
           單次上傳
         </Link>
         <Link to="/batch" className=" hover:text-[#8fa791]">

@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGenerateMultiplePDFs } from "../hooks/useGenerateMultiplePDFs";
 import Popup from "../components/Popup";
 import { validateExcelHeaders } from "../utils/validateExcelHeaders";
-import UploadInitial from "../components/uploadInitial";
-import UploadPrepaer from "../components/uploadPrepaer";
+import UploadInitial from "../components/UploadInitial";
+import UploadPrepaer from "../components/UploadPrepaer";
 import Checkbox from "../components/Checkbox";
 import { useGenerateMultiplePostalPDFs } from "../hooks/useGenerateMultiplePostalPDFs";
 
