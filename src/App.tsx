@@ -5,11 +5,17 @@ import HomePage from "./page/HomePage";
 function App() {
   return (
     <BrowserRouter>
-      <nav className="p-4 bg-gray-100 flex space-x-4">
-        <Link to="/" className=" hover:text-[#8fa791]">
+      <nav className="p-2 bg-[#2f3130] flex space-x-1">
+        <Link
+          to="/"
+          className="py-1 px-3 rounded-lg hover:bg-[#8fa791] text-white"
+        >
           單次上傳
         </Link>
-        <Link to="/batch" className=" hover:text-[#8fa791]">
+        <Link
+          to="/batch"
+          className="py-1 px-3 rounded-lg hover:bg-[#8fa791] text-white"
+        >
           批次上傳
         </Link>
       </nav>
