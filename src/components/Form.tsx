@@ -44,7 +44,9 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
       {formField.map((field) => (
         <div key={field.name} className="flex flex-col mb-4">
           {/* 字段標題 */}
-          <label className="font-medium mb-1 text-left">{field.label}</label>
+          <label htmlFor={field.name} className="font-medium mb-1 text-left">
+            {field.label}
+          </label>
           {/* 受領事由的參考寫法 */}
           {field.name === "receiptReason" ? (
             <Collapse title="參考範例">
@@ -59,9 +61,10 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
           )}
           {/* 字段輸入框 */}
           <input
+            id={field.name}
             type={field.type}
             {...register(field.name as keyof formFieldTypes, {
-              valueAsNumber: field.type === "number" ? true : undefined,
+              valueAsNumber: field.type === "number" ? true : undefined, //type是數字的話，就把字串轉為數字輸出
             })}
             className={`w-full p-2 border rounded box-border mb-1 transition focus:outline-none focus:ring-2 ${
               submitCount > 0 && errors[field.name as keyof formFieldTypes]
