@@ -49,7 +49,9 @@ const PostalForm = ({
       {postalFormField.map((field) => (
         <div key={field.name} className="flex flex-col mb-4">
           {/* 字段標題 */}
-          <label className="font-medium mb-1 text-left">{field.label}</label>
+          <label htmlFor={field.name} className="font-medium mb-1 text-left">
+            {field.label}
+          </label>
           {/* 受領事由的參考寫法 */}
           {field.name === "receiptReason" ? (
             <Collapse title="參考範例">
@@ -64,6 +66,7 @@ const PostalForm = ({
           )}
           {/* 字段輸入框 */}
           <input
+            id={field.name}
             type={field.type}
             {...register(field.name as keyof postalFormFieldTypes, {
               valueAsNumber: field.type === "number" ? true : undefined,

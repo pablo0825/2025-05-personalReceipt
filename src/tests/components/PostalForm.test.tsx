@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event"; //用useEvent來模擬真實的點擊和輸入
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import Form from "../../components/Form";
-import { formField } from "../../var/GlobalVariable";
+import PostalForm from "../../components/PostalForm";
+import { postalFormField } from "../../var/GlobalVariable";
 
 // 模擬 props
 const mockGeneratePDF = vi.fn();
@@ -11,8 +11,8 @@ const mockSetIsPopupOpen = vi.fn();
 
 const renderForm = () =>
   render(
-    <Form
-      generatePDF={mockGeneratePDF}
+    <PostalForm
+      generatePostalPDF={mockGeneratePDF}
       setProgress={mockSetProgress}
       setIsPopupOpen={mockSetIsPopupOpen}
     />
@@ -25,9 +25,8 @@ const fillValidFormData = async () => {
   await userEvent.type(screen.getByLabelText("身分證字號"), "A123456789");
   await userEvent.type(screen.getByLabelText("金額"), "4000");
   await userEvent.type(screen.getByLabelText("Email"), "test@example.com");
-  await userEvent.type(screen.getByLabelText("銀行分行代號"), "123");
-  await userEvent.type(screen.getByLabelText("銀行分行名稱"), "台北分行");
-  await userEvent.type(screen.getByLabelText("銀行帳號"), "000111222333");
+  await userEvent.type(screen.getByLabelText("郵局代號"), "123");
+  await userEvent.type(screen.getByLabelText("郵局帳號"), "000111222333");
   await userEvent.type(screen.getByLabelText("日期"), "2025-06-16");
 };
 
@@ -36,10 +35,10 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("Form Component", () => {
+describe("postForm Component", () => {
   it("應該渲染所有 input 欄位", () => {
     renderForm();
-    for (const field of formField) {
+    for (const field of postalFormField) {
       expect(screen.getByLabelText(field.label)).toBeInTheDocument();
     }
   });
@@ -68,7 +67,7 @@ describe("Form Component", () => {
 
     //等待重置完成
     await waitFor(() => {
-      for (const field of formField) {
+      for (const field of postalFormField) {
         const input = screen.getByLabelText(field.label) as HTMLInputElement;
         expect(input.value).toBe("");
       }
