@@ -16,7 +16,7 @@ const HomePage = () => {
   const { generatePostalPDF } = useGeneratePostalPDF();
 
   return (
-    <div className="max-w-3xl mx-auto p-10">
+    <div className="max-w-3xl mx-auto p-4 md:p-10">
       <div className="p-6 border rounded-lg shadow-xl bg-white">
         <Checkbox onChange={setToggleFormMode} label="啟用郵局模式" />
         {toggleFormMode ? (

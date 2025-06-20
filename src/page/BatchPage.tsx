@@ -105,17 +105,17 @@ const BatchPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-10">
+    <div className="max-w-3xl mx-auto p-4 md:p-10">
       <div className="p-6 border rounded-lg shadow-xl bg-white">
         {/*  */}
-        <div className="px-4 pb-4">
+        <div className=" sm:px-4 pb-4">
           <Checkbox
             checked={toggleUploadMode}
             onChange={setToggleUploadMode}
             label="啟用郵局模式"
           />
         </div>
-        <div className="w-full max-w-[37.7rem] aspect-[603/400] max-h-[25rem] border-2 border-dashed border-[#8fa791] rounded-md p-8 flex flex-col items-center justify-center space-y-4  bg-white shadow-sm mx-auto">
+        <div className="w-full max-w-[37.7rem] aspect-[603/400] max-h-[25rem] border-2 border-dashed border-[#8fa791] rounded-md p-2 md:p-8  flex flex-col items-center justify-center space-y-4  bg-white shadow-sm mx-auto">
           {isFileUpload ? (
             <div className="w-full">
               {isProgressComplete ? (
