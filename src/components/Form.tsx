@@ -46,7 +46,7 @@ const Form = ({ generatePDF, setProgress, setIsPopupOpen }: FormProps) => {
           {/* 字段標題 */}
           <label className="font-medium mb-1 text-left">{field.label}</label>
           {/* 受領事由的參考寫法 */}
-          {field.name === "receiptResaon" ? (
+          {field.name === "receiptReason" ? (
             <Collapse title="參考範例">
               <ul>
                 <li>演講費：05/24(六)授課鐘點費共2小時，4,000元</li>

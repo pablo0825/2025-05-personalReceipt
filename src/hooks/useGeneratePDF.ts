@@ -67,7 +67,7 @@ export const useGeneratePDF = () => {
       });
 
       //receiptResaon
-      page.drawText(`${formData.receiptResaon}`, {
+      page.drawText(`${formData.receiptReason}`, {
         x: 90,
         y: 523,
         size: 12,

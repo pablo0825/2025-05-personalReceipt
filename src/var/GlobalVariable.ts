@@ -6,7 +6,7 @@ export const formField = [
   { name: "fullName", label: "姓名", type: "text", required: true },
   { name: "organization", label: "服務單位", type: "text", required: true },
   { name: "jobTitle", label: "職稱", type: "text", required: true },
-  { name: "receiptResaon", label: "受領事由", type: "text", required: false },
+  { name: "receiptReason", label: "受領事由", type: "text", required: false },
   { name: "amount", label: "金額", type: "number", required: false },
   { name: "idNumber", label: "身分證字號", type: "text", required: true },
   { name: "email", label: "Email", type: "text", required: true },
@@ -41,7 +41,7 @@ export const postalFormField = [
   { name: "fullName", label: "姓名", type: "text", required: true },
   { name: "organization", label: "服務單位", type: "text", required: true },
   { name: "jobTitle", label: "職稱", type: "text", required: true },
-  { name: "receiptResaon", label: "受領事由", type: "text", required: false },
+  { name: "receiptReason", label: "受領事由", type: "text", required: false },
   { name: "amount", label: "金額", type: "number", required: false },
   { name: "idNumber", label: "身分證字號", type: "text", required: true },
   { name: "email", label: "Email", type: "text", required: true },
@@ -76,7 +76,7 @@ export const formFieldSchema = z.object({
   fullName: z.string().nonempty("請輸入姓名"),
   organization: z.string().nonempty("請輸入服務單位"),
   jobTitle: z.string().nonempty("請輸入職稱"),
-  receiptResaon: z.string().optional(),
+  receiptReason: z.string().optional(),
   amount: z.number().min(0, "金額不能小於0").optional(),
   idNumber: z.string().regex(/^[A-Z][0-9]{9}$/, "格式錯誤，需為1英文字+9數字"),
   email: z.string().email("請輸入有效的 Email").nonempty("請輸入 Email"),
@@ -91,7 +91,7 @@ export const postalFormFieldSchema = z.object({
   fullName: z.string().nonempty("請輸入姓名"),
   organization: z.string().nonempty("請輸入服務單位"),
   jobTitle: z.string().nonempty("請輸入職稱"),
-  receiptResaon: z.string().optional(),
+  receiptReason: z.string().optional(),
   amount: z.number().min(0, "金額不能小於0").optional(),
   idNumber: z.string().regex(/^[A-Z][0-9]{9}$/, "格式錯誤，需為1英文字+9數字"),
   email: z.string().email("請輸入有效的 Email").nonempty("請輸入 Email"),
@@ -108,7 +108,7 @@ export const postalFormFieldSchema = z.object({
 }); */
 
 export const item = [
-  { key: "receiptResaon", label: "受領事由" },
+  { key: "receiptReason", label: "受領事由" },
   { key: "amount", label: "金額" },
 ];
 

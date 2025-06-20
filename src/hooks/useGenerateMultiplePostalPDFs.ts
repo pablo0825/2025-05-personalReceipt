@@ -90,7 +90,7 @@ export const useGenerateMultiplePostalPDFs = () => {
             });
 
             //receiptResaon
-            page.drawText(safeText(row.receiptResaon), {
+            page.drawText(safeText(row.receiptReason), {
               x: 90,
               y: 523,
               size: 12,
