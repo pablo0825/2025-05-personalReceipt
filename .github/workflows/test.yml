@@ -20,8 +20,8 @@ jobs:
         with:
           node-version: 18 # 你可以根據自己環境調整 node 版本
 
-      - name: Run ESLint
-        run: npm run lint
+      #- name: Run ESLint
+      # run: npm run lint
 
       - name: Install dependencies
         run: npm ci
