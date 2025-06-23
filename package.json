@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -31,6 +32,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/file-saver": "^2.0.7",
     "@types/jszip": "^3.4.0",
+    "@types/node": "^24.0.3",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@types/testing-library__user-event": "^4.1.1",
