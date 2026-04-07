@@ -111,4 +111,4 @@ npx vitest run src/tests/utils/validateExcelHeaders.test.ts
 
 ### 部署
 
-Netlify，`netlify.toml` 設定 SPA redirect（`/* → /index.html`）。
+Cloudflare Workers，設定檔為 `wrangler.jsonc`。靜態檔案由 `./dist` 目錄提供，`not_found_handling: single-page-application` 處理 SPA 路由 fallback。部署指令：`npx wrangler deploy`。
