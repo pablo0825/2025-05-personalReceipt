@@ -1,0 +1,84 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useGenerateMultiplePostalPDFs } from "../../hooks/useGenerateMultiplePostalPDFs";
+import { saveAs } from "file-saver";
+
+vi.mock("../../utils/buildPDF", () => ({
+  buildPDF: vi.fn().mockResolvedValue(new Uint8Array([1, 2, 3])),
+}));
+
+vi.mock("file-saver", () => ({ saveAs: vi.fn() }));
+
+vi.mock("jszip", () => ({
+  default: vi.fn().mockImplementation(() => ({
+    file: vi.fn(),
+    generateAsync: vi.fn().mockResolvedValue(new Blob(["zip"])),
+  })),
+}));
+
+vi.mock("xlsx", () => ({
+  read: vi.fn().mockReturnValue({
+    Sheets: { Sheet1: {} },
+    SheetNames: ["Sheet1"],
+  }),
+  utils: {
+    sheet_to_json: vi.fn().mockReturnValue([
+      { fullName: "王小明", postalCode: "700" },
+      { fullName: "李小華", postalCode: "800" },
+      { fullName: "張大山", postalCode: "900" },
+    ]),
+  },
+}));
+
+const makeMockFile = () =>
+  Object.assign(new File([""], "test.xlsx"), {
+    arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(0)),
+  });
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("Batch postal PDF generation is tested", () => {
+  describe("All rows succeed and zip is downloaded", () => {
+    it("3 筆全成功時應呼叫 saveAs 一次，檔名為 '批次領據.zip'", async () => {
+      const { result } = renderHook(() => useGenerateMultiplePostalPDFs());
+      await result.current.generatePostalPDFs(makeMockFile());
+
+      expect(saveAs).toHaveBeenCalledOnce();
+      expect(saveAs).toHaveBeenCalledWith(expect.any(Blob), "批次領據.zip");
+    });
+  });
+
+  describe("One row fails without aborting the rest", () => {
+    it("第 2 筆 buildPDF 失敗時，第 1、3 筆仍成功，saveAs 仍被呼叫", async () => {
+      const { buildPDF } = await import("../../utils/buildPDF");
+      vi.mocked(buildPDF)
+        .mockResolvedValueOnce(new Uint8Array([1]))
+        .mockRejectedValueOnce(new Error("PDF error"))
+        .mockResolvedValueOnce(new Uint8Array([3]));
+
+      const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+      const { result } = renderHook(() => useGenerateMultiplePostalPDFs());
+      await result.current.generatePostalPDFs(makeMockFile());
+
+      expect(saveAs).toHaveBeenCalledOnce();
+      expect(alertSpy).toHaveBeenCalledWith(
+        expect.stringContaining("PDF 產生失敗")
+      );
+    });
+  });
+
+  describe("Progress callback reflects per-row completion", () => {
+    it("3 筆 rows 時 callback 依序以 33、67、100 呼叫", async () => {
+      const progressSpy = vi.fn();
+      const { result } = renderHook(() => useGenerateMultiplePostalPDFs());
+      await result.current.generatePostalPDFs(makeMockFile(), progressSpy);
+
+      expect(progressSpy).toHaveBeenNthCalledWith(1, 33);
+      expect(progressSpy).toHaveBeenNthCalledWith(2, 67);
+      expect(progressSpy).toHaveBeenNthCalledWith(3, 100);
+    });
+  });
+});
